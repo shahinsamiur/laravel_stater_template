@@ -44,6 +44,9 @@ class AuthService
 
     public function logout($user)
     {
+         if (!$user) {
+        return ApiResponse::error('Unauthenticated', 401);
+    }
         $user->currentAccessToken()->delete();
 
         return ApiResponse::success(null, 'Logged out successfully');
@@ -51,6 +54,10 @@ class AuthService
 
     public function me($user)
     {
+
+     if (!$user) {
+        return ApiResponse::error('Unauthenticated', 401);
+    }
         return ApiResponse::success($user, 'User profile');
     }
 }

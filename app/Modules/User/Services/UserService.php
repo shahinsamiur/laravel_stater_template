@@ -3,54 +3,47 @@
 namespace App\Modules\User\Services;
 
 use App\Models\User;
+use App\Modules\User\DTOs\CreateUserDTO;
+use App\Modules\User\DTOs\UpdateUserDTO;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\ApiResponse;
-use App\Modules\User\DTOs\RegisterDTO;
-use App\Modules\User\DTOs\LoginDTO;
 
-class AuthService
+class UserService
 {
-    public function register(RegisterDTO $dto)
+    public function getAll(): Collection
     {
-        $user = User::create([
-            'name' => $dto->name,
-            'email' => $dto->email,
+        return User::all();
+    }
+
+    public function findOrFail(int $id): User
+    {
+        return User::findOrFail($id);
+    }
+
+    public function create(CreateUserDTO $dto): User
+    {
+        return User::create([
+            'name'     => $dto->name,
+            'email'    => $dto->email,
             'password' => Hash::make($dto->password),
         ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return ApiResponse::success([
-            'user' => $user,
-            'token' => $token
-        ], 'User registered successfully');
     }
 
-    public function login(LoginDTO $dto)
+    public function update(int $id, UpdateUserDTO $dto): User
     {
-        $user = User::where('email', $dto->email)->first();
+        $user = User::findOrFail($id);
 
-        if (!$user || !Hash::check($dto->password, $user->password)) {
-            return ApiResponse::error('Invalid credentials', 401);
-        }
+        $user->update(array_filter([
+            'name'     => $dto->name,
+            'email'    => $dto->email,
+            'password' => $dto->password ? Hash::make($dto->password) : null,
+        ]));
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return ApiResponse::success([
-            'user' => $user,
-            'token' => $token
-        ], 'Login successful');
+        return $user->fresh();
     }
 
-    public function logout($user)
+    public function delete(int $id): void
     {
-        $user->currentAccessToken()->delete();
-
-        return ApiResponse::success(null, 'Logged out successfully');
-    }
-
-    public function me($user)
-    {
-        return ApiResponse::success($user, 'User profile');
+        User::findOrFail($id)->delete();
     }
 }

@@ -1,58 +1,291 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<!-- <p align="center">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="340" alt="Laravel Logo"/>
+</p> -->
+
+<h1 align="center">Laravel API Boilerplate</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  A clean, modular REST API starter kit built with Laravel & Sanctum — featuring module-based architecture, DTO pattern, and standardized API responses.
 </p>
 
-## About Laravel
+<!-- <p align="center">
+  <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"/></a>
+  <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"/></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"/></a>
+</p> -->
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Table of Contents
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+- [Authentication](#authentication)
+- [Request Examples](#request-examples)
+- [License](#license)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Overview
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This boilerplate provides a production-ready foundation for building REST APIs with Laravel. It follows a **modular architecture** where each feature (Auth, User, etc.) lives in its own self-contained module under `app/Modules/`, keeping the codebase clean and scalable.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Key patterns used:
 
-## Agentic Development
+- **DTO (Data Transfer Object)** — clean data passing between layers
+- **Service Layer** — business logic separated from controllers
+- **Form Requests** — validation isolated per request type
+- **Sanctum Token Auth** — stateless API authentication
+- **Unified API Response** — consistent JSON response structure
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
-```bash
-composer require laravel/boost --dev
+## Tech Stack
 
-php artisan boost:install
+| Technology      | Version |
+| --------------- | ------- |
+| PHP             | ^8.2    |
+| Laravel         | ^11.x   |
+| Laravel Sanctum | ^4.x    |
+| MySQL / SQLite  | Any     |
+
+---
+
+## Project Structure
+
+```
+app/
+├── Exceptions/
+│   └── Handler.php              # Global exception handling
+├── Helpers/
+│   └── ApiResponse.php          # Unified JSON response helper
+├── Http/
+│   ├── Controllers/
+│   │   └── Controller.php
+│   └── Requests/
+│       └── BaseRequest.php      # Shared base form request
+├── Models/
+│   └── User.php
+├── Modules/
+│   ├── Auth/                    # Authentication module
+│   │   ├── Controllers/
+│   │   │   └── AuthController.php
+│   │   ├── DTOs/
+│   │   │   ├── LoginDTO.php
+│   │   │   └── RegisterDTO.php
+│   │   ├── Requests/
+│   │   │   ├── LoginRequest.php
+│   │   │   └── RegisterRequest.php
+│   │   ├── Routes/
+│   │   │   └── api.php
+│   │   └── Services/
+│   │       └── AuthService.php
+│   └── User/                    # User management module
+│       ├── Controllers/
+│       │   └── UserController.php
+│       ├── DTOs/
+│       │   ├── CreateUserDTO.php
+│       │   └── UpdateUserDTO.php
+│       ├── Requests/
+│       │   ├── CreateUserRequest.php
+│       │   └── UpdateUserRequest.php
+│       ├── Routes/
+│       │   └── api.php
+│       └── Services/
+│           └── UserService.php
+└── Providers/
+    └── AppServiceProvider.php
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Requirements
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Before you begin, ensure you have the following installed:
 
-## Code of Conduct
+- **PHP** >= 8.2
+- **Composer** >= 2.x
+- **MySQL** >= 8.0 (or SQLite for local development)
+- **Node.js** >= 18.x (optional, for frontend assets)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Installation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**1. Clone the repository**
 
-## License
+```bash
+git clone https://github.com/shahinsamiur/laravel_stater_template
+cd laravel_stater_template
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**2. Install PHP dependencies**
+
+```bash
+composer install
+```
+
+**3. Copy the environment file**
+
+```bash
+cp .env.example .env
+```
+
+**4. Generate the application key**
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## Database Setup
+
+**1. Configure your database in `.env`**
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_user
+DB_PASSWORD=your_database_password
+```
+
+> 💡 For quick local development, you can use SQLite:
+>
+> ```env
+> DB_CONNECTION=sqlite
+> ```
+>
+> Then create the file: `touch database/database.sqlite`
+
+**2. Run migrations**
+
+```bash
+php artisan migrate
+```
+
+**3. (Optional) Seed the database**
+
+```bash
+php artisan db:seed
+```
+
+---
+
+## Running the Application
+
+**Start the development server**
+
+```bash
+php artisan serve
+```
+
+The API will be available at: `http://127.0.0.1:8000`
+
+**Run with a custom port**
+
+```bash
+php artisan serve --port=8080
+```
+
+---
+
+## API Endpoints
+
+### Auth Routes (Public)
+
+| Method | Endpoint             | Description             |
+| ------ | -------------------- | ----------------------- |
+| `POST` | `/api/auth/register` | Register a new user     |
+| `POST` | `/api/auth/login`    | Login and receive token |
+
+### User Routes (Protected — requires Bearer Token)
+
+| Method   | Endpoint          | Description       |
+| -------- | ----------------- | ----------------- |
+| `GET`    | `/api/users`      | List all users    |
+| `GET`    | `/api/users/{id}` | Get a single user |
+| `POST`   | `/api/users`      | Create a new user |
+| `PUT`    | `/api/users/{id}` | Update a user     |
+| `DELETE` | `/api/users/{id}` | Delete a user     |
+
+---
+
+## Authentication
+
+This API uses **Laravel Sanctum** for token-based authentication.
+
+**1. Register or Login** to receive a token:
+
+```json
+POST /api/auth/login
+{
+    "email": "admin@example.com",
+    "password": "password123"
+}
+```
+
+**2. Include the token** in all protected requests:
+
+```
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+```
+
+---
+
+## Request Examples
+
+### Register a User
+
+```json
+POST /api/auth/register
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "secret1234",
+    "password_confirmation": "secret1234"
+}
+```
+
+### Create a User (Admin)
+
+```json
+POST /api/users
+Authorization: Bearer YOUR_TOKEN
+
+{
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "password": "secret1234",
+    "password_confirmation": "secret1234"
+}
+```
+
+### Update a User
+
+```json
+PUT /api/users/1
+Authorization: Bearer YOUR_TOKEN
+
+{
+    "name": "Jane Updated",
+    "email": "jane_updated@example.com"
+}
+```
+
+> ⚠️ Always send requests with `Content-Type: application/json` and use **raw JSON** body — not `form-data` — especially for `PUT` requests.
+
+---
+
+<!-- ## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). -->
